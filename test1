@@ -1,0 +1,32 @@
+local http = game.HttpService
+if not game.Workspace:FindFirstChild('PopBob') then
+
+    Instance.new('StringValue',workspace).Name = 'PopBob'
+
+end
+
+for i = 64900, 65200, 100 do
+
+    print('On port ' .. i)
+
+
+    for j = i, math.min(i + 99, 65200) do
+
+        spawn(function()
+
+            local s, e = pcall(http.GetAsync, http, 'http://localhost:' .. j)
+            if s or not (e:find("Couldn't connect to server") or e:find("WinHttpSendRequest failed")) then
+
+                print('Something is on port ' .. j)
+
+                if game.Workspace.PopBob.Value == '' then
+
+                    game.Workspace.PopBob.Value = j
+                else
+                    game.Workspace.PopBob.Value = game.Workspace.PopBob.Value.. ','.. j
+                end
+            end
+        end)
+    end 
+    wait(20)
+    end
